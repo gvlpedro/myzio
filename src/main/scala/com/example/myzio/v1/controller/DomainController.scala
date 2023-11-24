@@ -1,8 +1,5 @@
 package com.example.myzio.v1.controller
 
-import com.example.myzio.v1.service.DomainService
-import com.example.myzio.v1.model.domain.Domain
-
 import zio.*
 import zio.http.*
 import zio.http.ChannelEvent.Read
@@ -21,25 +18,12 @@ object DomainController {
   def apply(): HttpApp[Any] = {
     Routes(
       Method.POST / string("id") / "domain" / "create" ->
-        handler { (id: String, req: Request) =>
+        handler { (id: String, _: Request) =>
           for {
             //_ <- ZIO.logInfo("URL:" + req.url.path.toString)
-            domain <- req.body.asString.map(_.fromJson[Domain])
-            r <- domain match {
-              case Left(error) =>
-                ZIO
-                  .debug(s"[CREATE-DOMAIN] Failed to parse the input: $error")
-                  .as(
-                    http.Response(
-                      status = Status.BadRequest,
-                      body = Body.fromString(error)
-                    )
-                  )
-              case Right(domain) =>
-                DomainService.createDomain(domain).map(out => Response.json(out.toJson))
-            }
-          } yield r
+            out <-ZIO.succeed(Response.text(s"Created domain '$id'."))
+          } yield out
         }
-    ).toHttpApp @@ Cors.config
+    ).toHttpApp
   }
 }
