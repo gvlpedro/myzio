@@ -16,11 +16,10 @@ ThisBuild / scalacOptions ++= Seq(
   "-Xmigration", // warn about constructs whose behavior may have changed since version
   "-source:3.1"
 )
-/*
+
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 ThisBuild / scalafixDependencies ++= List("com.github.liancheng" %% "organize-imports" % "0.6.0")
-*/
 
 def settingsApp = Seq(
   name := "myzio-website",
@@ -28,8 +27,8 @@ def settingsApp = Seq(
   testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   libraryDependencies ++= Seq(
     zioCore,
-//    zioLogging,
-//    zioConfigTypeSafe,
+    zioLogging,
+    zioConfigTypeSafe,
     zioJson,
     zioHttp,
     zioTest,
