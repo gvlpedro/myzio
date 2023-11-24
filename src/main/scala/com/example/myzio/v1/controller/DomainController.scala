@@ -14,10 +14,21 @@ import zio.http.codec.PathCodec.string
 //import zio.config.typesafe.TypesafeConfigProvider
 //import zio.{Config, ConfigProvider, ExitCode, Runtime, Scope, ZIO, ZIOAppDefault, ZLayer}
 
-import zio.http.Middleware.{CorsConfig, cors}
 import zio.json.*
 
 object DomainController {
+  def apply(): HttpApp[Any] = {
+    Routes(
+      Method.POST / string("id") / "domain" / "create" ->
+        handler { (id: String, _: Request) =>
+          for {
+            //_ <- ZIO.logInfo("URL:" + req.url.path.toString)
+            out <- ZIO.succeed(Response.text(s"Created domain '$id'."))
+          } yield out
+        }
+    ).toHttpApp @@ ComposedMiddlewares()
+  }
+  /*
   def apply(): HttpApp[Any] = {
     Routes(
       Method.POST / string("id") / "domain" / "create" ->
@@ -40,6 +51,6 @@ object DomainController {
             }
           } yield r
         }
-    ).toHttpApp @@ Cors.config
-  }
+    ).toHttpApp @@ ComposedMiddlewares()
+  }*/
 }

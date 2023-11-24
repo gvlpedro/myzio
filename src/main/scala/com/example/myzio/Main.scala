@@ -16,9 +16,10 @@ object Main extends ZIOAppDefault {
     Server
       .serve(httpApps)
       .provide(
-        Server.defaultWithPort(port),
-        DomainServiceImpl.layer,
-        DomainRepositoryImpl.layer
+        Server.defaultWithPort(port)
+        //,
+//        DomainServiceImpl.layer,
+//        DomainRepositoryImpl.layer
       )
   }
 }

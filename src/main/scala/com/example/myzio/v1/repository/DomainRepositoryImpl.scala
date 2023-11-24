@@ -9,28 +9,29 @@ case class DomainRepositoryImpl(refDomains: Ref[Map[String, Domain]]) extends Do
     for {
       maybeDomain <- refDomains.get.map(m => m.get(domain.id))
       added <- maybeDomain match {
-        case None     =>
+        case None =>
           for {
-            _ <- refDomains.update(_ + domain.id -> (domain))
-            result <- ZIO.succeed(false)
+            keyValue  <- ZIO.succeed(domain.id -> domain)
+            _         <- refDomains.update(_ + keyValue)
+            result    <- ZIO.succeed(false)
           } yield result
-        case Some     => ZIO.succeed(false)
+        case Some(_) => ZIO.succeed(false)
       }
     } yield added
 
   def findDomain(id: String): UIO[Option[Domain]] = {
     for {
-      maybeDomain <- ZIO.succeed(None) //TODO
+      maybeDomain <- ZIO.succeed(None) // TODO
     } yield maybeDomain
   }
 
   def listDomains(): Task[Option[List[Domain]]] = {
-     ZIO.succeed(None) // TODO
+    ZIO.succeed(None) // TODO
   }
 }
 
 object DomainRepositoryImpl {
-  private val defaultDomainMap = Map()
+  private val defaultDomainMap: Map[String,Domain] = Map()
 
   def layer: ZLayer[Any, Nothing, DomainRepositoryImpl] =
     ZLayer.fromZIO(Ref.make(defaultDomainMap).map(new DomainRepositoryImpl(_)))
