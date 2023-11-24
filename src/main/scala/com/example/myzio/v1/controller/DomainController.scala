@@ -24,6 +24,6 @@ object DomainController {
             out <-ZIO.succeed(Response.text(s"Created domain '$id'."))
           } yield out
         }
-    ).toHttpApp
+    ).toHttpApp @@ ComposedMiddlewares()
   }
 }
