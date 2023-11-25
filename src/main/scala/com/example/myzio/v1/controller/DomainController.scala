@@ -18,10 +18,11 @@ object DomainController {
   def apply(): HttpApp[Any] = {
     Routes(
       Method.POST / string("id") / "domain" / "create" ->
-        handler { (id: String, _: Request) =>
+        handler { (id: String, req: Request) =>
           for {
             //_ <- ZIO.logInfo("URL:" + req.url.path.toString)
             out <-ZIO.succeed(Response.text(s"Created domain '$id'."))
+            _ <- req.body.asString.map(Response.text(_)) // TODO: There is a bug in this line
           } yield out
         }
     ).toHttpApp @@ ComposedMiddlewares()
