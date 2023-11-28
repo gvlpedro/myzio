@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-  steps:
+    steps:
     - uses: actions/checkout@v1
     - uses: olafurpg/setup-scala@v11
     - name: Compile
