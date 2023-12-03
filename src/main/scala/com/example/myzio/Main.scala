@@ -8,11 +8,12 @@ import zio._
 
 object Main extends ZIOAppDefault {
   def run: ZIO[Environment with ZIOAppArgs with Scope, Throwable, Any] = {
-    val port = 8085
+    val port = 8080
     println(s"Starting server on http://localhost:$port")
     val httpApps = DomainController()
 
-    Server.serve(httpApps)
+    Server
+      .serve(httpApps)
       .provide(Server.defaultWithPort(port), DomainServiceImpl.layer, DomainRepositoryImpl.layer)
   }
 }

@@ -1,12 +1,22 @@
-name: CI
+name: Deploy website
 on: [push]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
-    - uses: actions/checkout@v1
-    - uses: olafurpg/setup-scala@v11
-    - name: Compile
-      run: sbt compile
+      - uses: actions/checkout@v1
+      - uses: olafurpg/setup-scala@v11
+      - name: Compile
+        run: sbt compile
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Compile
+        run: sbt compile
+      - name: Run tests
+        run: sbt test
+      - name: Deploy to fly.io
+        run: flyctl deploy --remote-only

@@ -14,7 +14,8 @@ object DomainController {
             // _ <- req.body.asString.map(Response.text(_))
             out <- ZIO.succeed(Response.text(id))
           } yield out
-        }
+        },
+      Method.GET / "" -> handler(ZIO.succeed(Response.text("working...")))
     ).toHttpApp @@ ComposedMiddlewares()
   }
 }
