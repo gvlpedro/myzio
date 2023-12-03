@@ -7,11 +7,11 @@ import zio.*
 case class DomainRepositoryImpl(refDomains: Ref[Map[String, Domain]]) extends DomainRepository {
   def saveDomain(domain: Domain): UIO[Boolean] =
     for {
-      maybeDomain <- refDomains.get.map(m => m.get(domain.id))
+      maybeDomain <- refDomains.get.map(m => m.get(domain.id.get))
       added <- maybeDomain match {
         case None =>
           for {
-            keyValue  <- ZIO.succeed(domain.id -> domain)
+            keyValue  <- ZIO.succeed(domain.id.get -> domain)
             _         <- refDomains.update(_ + keyValue)
             result    <- ZIO.succeed(false)
           } yield result

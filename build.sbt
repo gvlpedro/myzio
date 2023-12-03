@@ -22,6 +22,10 @@ ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 ThisBuild / scalafixDependencies ++= List("com.github.liancheng" %% "organize-imports" % "0.6.0")
 
 assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") =>
+    MergeStrategy.singleOrError
+  case PathList("META-INF", "resources", "webjars", "swagger-ui", _*) =>
+    MergeStrategy.singleOrError
   case PathList("META-INF", _*) => MergeStrategy.discard
   case _                        => MergeStrategy.first
 }
@@ -37,6 +41,10 @@ def settingsApp = Seq(
     zioConfigTypeSafe,
     zioJson,
     zioHttp,
+    tapir,
+    tapirJson,
+    tapirSwagger,
+    tapirMetrics,
     zioTest,
     zioTestSBT,
     zioTestMagnolia,

@@ -4,8 +4,8 @@
 
 Based on [HyperCodeLab example](https://github.com/HyperCodeLab/zio-microservices/tree/main)
 and trying to add more features:
- * Deployment
- * ...
+ * Fly.io Deployment
+ * Tapir (+ swagger docs) http://localhost:8080/docs/
 
 ## Fly.io deployment
 
