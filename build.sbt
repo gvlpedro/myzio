@@ -44,7 +44,6 @@ def settingsApp = Seq(
     tapir,
     tapirJson,
     tapirSwagger,
-    tapirMetrics,
     zioTest,
     zioTestSBT,
     zioTestMagnolia,
