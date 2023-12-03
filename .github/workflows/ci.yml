@@ -14,8 +14,8 @@ jobs:
       - name: Compile
         run: sbt compile
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Compile
-        run: sbt compile; ls -ltrh target/scala-3.3.1/app.jar
+      - name: Assembly
+        run: sbt assembly; ls -ltrh target/scala-3.3.1/app.jar
       - name: Run tests
         run: sbt test
       - name: Deploy to fly.io
