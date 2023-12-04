@@ -41,6 +41,7 @@ def settingsApp = Seq(
     zioConfigTypeSafe,
     zioJson,
     zioHttp,
+    zioMetrics,
     tapir,
     tapirJson,
     tapirSwagger,

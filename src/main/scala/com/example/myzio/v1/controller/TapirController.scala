@@ -8,9 +8,12 @@ import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.ziohttp.*
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.ztapir.ZServerEndpoint
+import zio.metrics.jvm.DefaultJvmMetrics
 import zio.*
 import zio.http.HttpApp
 import zio.json.*
+import zio.metrics.connectors.MetricsConfig
+import zio.metrics.connectors.prometheus.{PrometheusPublisher, prometheusLayer, publisherLayer}
 
 import java.util.UUID
 import scala.collection.mutable
@@ -72,8 +75,23 @@ object TapirController {
 
   val endpointsList: List[ZServerEndpoint[Any, Any]] = List(helloEndpoint, listDomains, createDomain, getDomain)
 
-  def swaggerUIServerEndpoints: List[ServerEndpoint[Any, Task]] =
+  val swaggerUIServerEndpoints: List[ServerEndpoint[Any, Task]] =
     SwaggerInterpreter().fromServerEndpoints[Task](endpointsList, "my ZIO application", "1.0.0")
+
+  // TODO: Add metrics
+  val metricEndpoint= {
+    val layer = DefaultJvmMetrics.live.orDie >+> ZLayer.make[PrometheusPublisher](
+      ZLayer.succeed(MetricsConfig(1.seconds)),
+      prometheusLayer,
+      publisherLayer
+    )
+
+    val unsafeLayers = Unsafe.unsafe { implicit u => Runtime.unsafe.fromLayer(layer) }
+    val getMetricsEffect: ZIO[Any, Nothing, String] =
+      Unsafe.unsafe { implicit u => unsafeLayers.run(ZIO.serviceWithZIO[PrometheusPublisher](_.get)) }
+
+    endpoint.get.in("metrics").out(stringBody).serverLogicSuccess(_ => getMetricsEffect)
+  }
 
   def apply(): HttpApp[Any] =
     ZioHttpInterpreter(ZioHttpServerOptions.default).toHttp(endpointsList ++ swaggerUIServerEndpoints)
